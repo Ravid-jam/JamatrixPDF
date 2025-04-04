@@ -1,10 +1,9 @@
 "use client";
-import Header from "@/components/common/Header";
 import SalarySlip from "@/components/SalarySlip";
 
 export default function Home() {
   return (
-    <div className="container mx-auto mt-16">
+    <div className="container mx-auto pt-28">
       <SalarySlip />
     </div>
   );

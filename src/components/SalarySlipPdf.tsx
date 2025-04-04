@@ -8,6 +8,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import moment from "moment";
+import { numberToWords } from "./utils/utils";
 
 Font.register({
   family: "Roboto",
@@ -21,35 +22,33 @@ const tableStyle = {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 20,
     fontSize: 12,
     fontFamily: "Helvetica",
     backgroundColor: "white",
   },
   header: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     borderBottom: 1,
     paddingBottom: 15,
+    width: "100%",
   },
   logoParent: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    gap: 210,
+    // marginBottom:,
   },
   logo: {
-    width: "200px",
+    width: "150px",
     height: "90px",
     objectFit: "contain",
   },
   title: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
+    width: "100%",
+    textAlign: "center",
   },
   title2: {
     fontSize: 12,
@@ -60,8 +59,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   col: {
-    flex: 1, // Ensures equal spacing
-    paddingRight: 10, // Adds some spacing for clarity
+    flex: 1,
+    paddingRight: 10,
     display: "flex",
     flexDirection: "row",
     gap: 5,
@@ -71,10 +70,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   bold: {
     fontWeight: "bold",
+    fontSize: 13,
   },
 
   firstTableColHeaderStyle: {
@@ -131,9 +131,14 @@ const styles = StyleSheet.create({
   button: {
     fontFamily: "Roboto",
     marginTop: 20,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: 10,
   },
   buttonTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -191,101 +196,179 @@ const createTableRow = (data: any) => {
 
 const getFormattedDateRange = (startDate: any, endDate: any) => {
   if (!startDate || !endDate) return "";
-  const start = moment(startDate, "DD-MM-YYYY").format("MMMM D");
-  const end = moment(endDate, "DD-MM-YYYY").format("MMMM D, YYYY");
+
+  const start = moment(startDate, "DD-MM-YYYY").format("DD MMMM YYYY");
+  const end = moment(endDate, "DD-MM-YYYY").format("DD MMMM YYYY");
 
   return `${start} - ${end}`;
 };
+
+const getFormattedMonth = (startDate: any, endDate: any) => {
+  if (!startDate || !endDate) return "";
+
+  const start = moment(startDate, "DD-MM-YYYY");
+  const end = moment(endDate, "DD-MM-YYYY");
+
+  // Check if start and end are in the same month and year
+  if (start.isSame(end, "month") && start.isSame(end, "year")) {
+    return start.format("MMMM YYYY"); // Example: "April 2025"
+  }
+
+  return `${start.format("DD MMMM YYYY")} - ${end.format("DD MMMM YYYY")}`;
+};
+
 const SalarySlipPdf = ({ data }: { data: any }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.logoParent}>
-        <Image style={styles.logo} src="/assets/logo.png" />
-      </View>
-      <View style={styles.header}>
-        <Text style={styles.title}>Salary Slip</Text>
-        <Text style={styles.title2}>
-          Date: {moment(data.date).format("DD MMMM YYYY")}
-        </Text>
-      </View>
-      <View style={tableStyle as any}>
-        <View style={styles.section}>
-          <View style={styles.row}>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Employee Name:</Text>
-              <Text>{data.fullName ? data.fullName : "-"}</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Pay Period:</Text>
-              <Text>
-                {data.startDate
-                  ? getFormattedDateRange(
-                      JSON.stringify(data.startDate),
-                      JSON.stringify(data.endDate)
-                    )
-                  : "-"}
-              </Text>
-            </View>
+    <Page size={{ width: "595.28px", height: 650 }} style={styles.page}>
+      <View
+        style={{
+          border: "1px solid black",
+          margin: 10,
+          padding: 10,
+        }}
+      >
+        <View style={styles.logoParent}>
+          <View>
+            <Image style={styles.logo} src="/assets/logo.png" />
           </View>
-
-          <View style={styles.row}>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Employee ID:</Text>
-              <Text>-</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Bank Name:</Text>
-              <Text>-</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Department:</Text>
-              <Text>IT</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Account No:</Text>
-              <Text>-</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.col}>
-              <Text style={styles.bold}>Designation:</Text>
-              <Text>Software Engineer</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.bold}>PF No:</Text>
-              <Text>-</Text>
-            </View>
-          </View>
-        </View>
-        <View>
-          {createTableHeader()}
-          {createTableRow(data)}
-        </View>
-        <View style={styles.button}>
-          <Text style={styles.buttonTitle}>
-            Net Payable Salary:
-            <Text style={{ fontWeight: 900 }}>
-              ₹{data.salary ? data.salary : "0"}
-            </Text>
-          </Text>
-        </View>
-        <View style={styles.button}>
-          <Text
+          <View
             style={{
-              fontSize: 12,
-              textAlign: "center",
-              marginTop: 10,
-              fontFamily: "Roboto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 7,
             }}
           >
-            **This is a computer-generated salary slip and does not require a
-            signature**
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
+              Jamatrix Innovations LLP
+            </Text>
+            <Text
+              style={{
+                maxWidth: "200px",
+              }}
+            >
+              407 Shivalik, Dabholi-BRTS road, Katargam, Surat, Gujarat 395004.
+            </Text>
+          </View>
+        </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            Pay Slip for the Month of{" "}
+            {getFormattedMonth(data.startDate, data.endDate)}
           </Text>
         </View>
+        <View style={tableStyle as any}>
+          <View style={styles.section}>
+            <View style={styles.row}>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Employee Name:</Text>
+                <Text>{data.fullName ? data.fullName : "-"}</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Pay Period:</Text>
+                <Text>
+                  {data.startDate
+                    ? getFormattedDateRange(
+                        JSON.stringify(data.startDate),
+                        JSON.stringify(data.endDate)
+                      )
+                    : "-"}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Employee ID:</Text>
+                <Text>{data?.employeeId ? data?.employeeId : "-"}</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Working day:</Text>
+                <Text>{data?.workingDay ? data?.workingDay : "-"}</Text>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Joining Date:</Text>
+                <Text>{data?.joiningDate ? data?.joiningDate : "-"}</Text>
+              </View>
+
+              <View style={styles.col}>
+                <Text style={styles.bold}>Bank Name:</Text>
+                <Text>{data?.bankName ? data?.bankName : "-"}</Text>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Designation:</Text>
+                <Text>{data?.designation ? data?.designation : "-"}</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Account No:</Text>
+                <Text>{data?.acountNo ? data?.acountNo : "-"}</Text>
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Department:</Text>
+                <Text>{data?.department ? data?.department : "-"}</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.bold}>Location:</Text>
+                <Text>{data?.location ? data?.location : "-"}</Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            {createTableHeader()}
+            {createTableRow(data)}
+          </View>
+          <View style={styles.button}>
+            <Text style={styles.buttonTitle}>
+              Net Pay:&nbsp;&nbsp;
+              <Text style={{ fontWeight: 900 }}>
+                ₹&nbsp;{data.salary ? data.salary : "0"}
+              </Text>
+            </Text>
+            <Text style={styles.buttonTitle}>
+              In Words:&nbsp;&nbsp;
+              <Text
+                style={{
+                  fontWeight: 900,
+                  maxWidth: "120px",
+                }}
+              >
+                {data.salary ? numberToWords(data.salary) : "-"}
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 3,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 13,
+            textAlign: "center",
+            fontFamily: "Roboto",
+          }}
+        >
+          **This is a computer-generated salary slip and does not require a
+          signature**
+        </Text>
       </View>
     </Page>
   </Document>
