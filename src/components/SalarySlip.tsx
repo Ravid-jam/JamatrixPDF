@@ -58,8 +58,6 @@ const SalarySlip = () => {
     saveAs(blob, `${data.fullName}-salary-slip.pdf`);
   };
 
-  const formValues = watch();
-
   return (
     <div className="min-h-[calc(100vh-80px)] max-w-screen-lg mx-auto">
       <div className=" flex flex-col gap-6">
@@ -419,7 +417,7 @@ const SalarySlip = () => {
               type="submit"
               className="px-5 bg-primary text-white py-2 rounded cursor-pointer"
             >
-              Generate PDF
+              Slip
             </button>
           </div>
         </form>

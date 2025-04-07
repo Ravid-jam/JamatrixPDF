@@ -41,7 +41,6 @@ export default function InvoiceComponent() {
     handleSubmit,
     register,
     watch,
-    getValues,
     setValue,
     formState: { errors },
   } = useForm<FormData>({
@@ -804,6 +803,11 @@ export default function InvoiceComponent() {
                             "jamatrixinnovations@gmail.com"
                           );
                           setValue("phonefrom", "+91 96015 00430");
+                        } else if (field.value === true) {
+                          setValue("companyNameFrom", "");
+                          setValue("addressfrom", "");
+                          setValue("emailfrom", "");
+                          setValue("phonefrom", "");
                         }
                       }}
                       className={`w-14 h-8 flex items-center bg-gray-300 rounded-full p-1 transition duration-300 ${
@@ -832,9 +836,9 @@ export default function InvoiceComponent() {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="mt-4 px-4 bg-primary text-white py-2 rounded"
+                  className="mt-4 px-4 bg-primary text-white py-2 rounded cursor-pointer"
                 >
-                  Generate PDF
+                  Invoice
                 </button>
               </div>
             </form>

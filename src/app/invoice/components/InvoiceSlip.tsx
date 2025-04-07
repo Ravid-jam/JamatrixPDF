@@ -245,7 +245,7 @@ const createTableRow = (data: any) => {
             fontFamily: "Roboto",
           }}
         >
-          {item.description}
+          {item.description ? item.description : "-"}
         </Text>
       </View>
       <View
@@ -261,7 +261,7 @@ const createTableRow = (data: any) => {
             fontFamily: "Roboto",
           }}
         >
-          {item.quantity}
+          {item.quantity ? item.quantity : 0}
         </Text>
       </View>
       <View
@@ -276,7 +276,9 @@ const createTableRow = (data: any) => {
             fontWeight: "bold",
             fontFamily: "Roboto",
           }}
-        >{`${data.currency} ${item.price}`}</Text>
+        >
+          {item.price ? `${data.currency} ${item.price}` : `${data.currency} 0`}
+        </Text>
       </View>
       <View
         style={{
@@ -290,7 +292,11 @@ const createTableRow = (data: any) => {
             fontWeight: "bold",
             fontFamily: "Roboto",
           }}
-        >{`${data.currency} ${item.quantity * item.price}`}</Text>
+        >
+          {item.quantity && item.price
+            ? `${data.currency} ${item.quantity * item.price}`
+            : `${data.currency} 0`}
+        </Text>
       </View>
     </View>
   ));
@@ -403,6 +409,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                 backgroundColor: "rgb(239 234 248)",
                 padding: "15px",
                 borderRadius: 5,
+                width: "260px",
               }}
             >
               <Text
@@ -495,7 +502,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                           fontSize: 12,
                         }}
                       >
-                        {data?.phonefrom ? data?.phonefrom : ""}
+                        &nbsp;{data?.phonefrom ? data?.phonefrom : ""}
                       </Text>
                     </View>
                   </View>
@@ -508,6 +515,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                   backgroundColor: "rgb(239 234 248)",
                   padding: "15px",
                   borderRadius: 5,
+                  width: "260px",
                 }}
               >
                 <Text
