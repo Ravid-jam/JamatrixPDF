@@ -294,7 +294,7 @@ const createTableRow = (data: any) => {
           }}
         >
           {item.quantity && item.price
-            ? `${data.currency} ${item.quantity * item.price}`
+            ? `${data.currency} ${(item.quantity * item.price).toFixed(2)}`
             : `${data.currency} 0`}
         </Text>
       </View>
@@ -851,7 +851,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                     }}
                   >
                     {data.currency}&nbsp;
-                    {subTotal}
+                    {subTotal.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -902,7 +902,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                       fontFamily: "Roboto",
                     }}
                   >
-                    {data?.currency} {total}
+                    {data?.currency} {total.toFixed(2)}
                   </Text>
                 </View>
               </View>
