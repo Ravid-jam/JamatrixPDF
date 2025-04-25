@@ -866,10 +866,9 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                     Tax (
                     {data.taxCaculateOption === "Percentage"
                       ? `${data.tax}%`
-                      : `${calculatePercentage(
-                          Number(subTotal),
-                          Number(taxAdd)
-                        )}`}
+                      : `${((Number(taxAdd) / Number(subTotal)) * 100).toFixed(
+                          2
+                        )}%`}
                     )
                   </Text>
                   <Text
@@ -880,7 +879,7 @@ const InvoiceSlip = ({ data }: { data: any }) => {
                     }}
                   >
                     {data.currency}&nbsp;
-                    {taxAmount}
+                    {taxAmount.toFixed(2)}
                   </Text>
                 </View>
                 <View
